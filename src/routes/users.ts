@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, getAllUser, postUser, updateUser } from '../controllers/users';
+import { deleteUser, getAllUser, postUser, updateUser } from '../controllers/users.controller';
 
 const router = express.Router()
 
@@ -9,7 +9,6 @@ router.post('/', postUser)
 router.get('/', getAllUser)
 // UPDATE
 router.patch('/:id', updateUser)
-
 // DELETE
 router.delete('/:id', deleteUser)
 

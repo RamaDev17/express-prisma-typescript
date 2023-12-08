@@ -1,7 +1,8 @@
 import express from 'express';
 import { env } from 'process';
+import { accessValidation, logRequest } from './middleware';
 import users from './routes/users'
-import { logRequest } from './middleware/logs';
+import auth from './routes/auth'
 
 const app = express();
 const PORT = env.PORT;
@@ -11,7 +12,8 @@ app.use(express.json())
 app.use(logRequest)
 
 //app
-app.use('/users', users)
+app.use('/', auth)
+app.use('/users', accessValidation, users)
 
 //SERVER
 app.listen(PORT, () => {

@@ -1,15 +1,21 @@
 import { Request, Response } from "express";
 import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient()
 
 const postUser = async (req: Request, res: Response) => {
     const { name, email, password } = req.body
+
+    const hashedPassword = await bcrypt.hash(password, 10)
     try {
         const result = await prisma.users.create({
             data: {
+                id: uuidv4(),
                 name,
                 email,
-                password
+                password: hashedPassword
             }
         })
 
@@ -42,12 +48,11 @@ const updateUser = async (req: Request, res: Response) => {
         const result = await prisma.users.update({
             data: {
                 name,
-                email,
                 password,
                 is_verified
             },
             where: {
-                id: Number(id)
+                id: id
             }
         })
         res.json({ message: `User ${id} updated`, data: result })
@@ -63,7 +68,7 @@ const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params
     try {
         await prisma.users.delete({
-            where: { id: Number(id) }
+            where: { id: id }
         })
 
         res.json({ message: `User ${id} deleted` })
